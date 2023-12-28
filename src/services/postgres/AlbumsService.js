@@ -11,15 +11,19 @@ class AlbumsService {
 
   async addAlbum({ name, year }) {
     const id = nanoid(16);
+    // console.log(name, year);
 
     const query = {
       text: 'INSERT INTO albums VALUES ($1, $2, $3) RETURNING id',
       values: [id, name, year],
     };
+    // console.log(query);
 
     const result = await this._pool.query(query);
+    // console.log(result);
 
     if (!result.rows[0].id) {
+      console.log('its here');
       throw new InvariantError('Album gagal ditambahkan');
     }
 
