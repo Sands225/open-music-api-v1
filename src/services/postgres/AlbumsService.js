@@ -23,7 +23,7 @@ class AlbumsService {
     // console.log(result);
 
     if (!result.rows[0].id) {
-      console.log('its here');
+      // console.log(result.rows[0].id);
       throw new InvariantError('Album gagal ditambahkan');
     }
 
