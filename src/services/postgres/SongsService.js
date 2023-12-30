@@ -45,7 +45,6 @@ class SongsService {
     }
     if (title === undefined && performer === undefined) {
       const result = await this._pool.query('SELECT id, title, performer FROM songs');
-      console.log('🚀 ~ file: SongsService.js:43 ~ SongsService ~ getSongs ~ result.rows:', result.rows);
       return result.rows.map(mapDBToModel);
     }
 
