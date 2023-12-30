@@ -32,9 +32,9 @@ class SongsHandler {
     return response;
   }
 
-  async getSongsHandler() {
-    const songs = await this._service.getSongs();
-    // console.log("🚀 ~ file: handler.js:37 ~ SongsHandler ~ getSongsHandler ~ songs:", songs);
+  async getSongsHandler(request) {
+    const { title, performer } = request.query;
+    const songs = await this._service.getSongs(title, performer);
     return {
       status: 'success',
       data: {
@@ -45,9 +45,8 @@ class SongsHandler {
 
   async getSongByIdHandler(request) {
     const { id } = request.params;
-    // const album = await this._service.getAlbumById(id);
-    const song = await this._service.getSongById(id, request.payload);
-    // console.log("🚀 ~ file: handler.js:49 ~ SongsHandler ~ getSongByIdHandler ~ song:", song);
+    const song = await this._service.getSongById(id);
+
     return {
       status: 'success',
       data: {

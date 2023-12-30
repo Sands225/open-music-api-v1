@@ -18,6 +18,7 @@ class SongsService {
       text: 'INSERT INTO songs VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
       values: [id, title, year, genre, performer, duration, albumId],
     };
+    // console.log('🚀 ~ file: SongsService.js:21 ~ SongsService ~ query:', query);
     // console.log(query);
 
     const result = await this._pool.query(query);
@@ -31,9 +32,30 @@ class SongsService {
     return result.rows[0].id;
   }
 
-  async getSongs() {
-    const result = await this._pool.query('SELECT id, title, performer FROM songs');
-    // console.log("🚀 ~ file: SongsService.js:36 ~ SongsService ~ getSongs ~ result:", result);
+  async getSongs(title, performer) {
+    if (title !== undefined && performer !== undefined) {
+      const query = {
+        text: 'SELECT id, title, performer FROM songs WHERE LOWER(title) LIKE \'%\' || $1 || \'%\' AND LOWER(performer) LIKE \'%\' || $2 || \'%\' ',
+        values: [title, performer],
+      };
+      // console.log(query);
+
+      const result = await this._pool.query(query);
+      return result.rows.map(mapDBToModel);
+    }
+    if (title === undefined && performer === undefined) {
+      const result = await this._pool.query('SELECT id, title, performer FROM songs');
+      console.log('🚀 ~ file: SongsService.js:43 ~ SongsService ~ getSongs ~ result.rows:', result.rows);
+      return result.rows.map(mapDBToModel);
+    }
+
+    const query = {
+      text: 'SELECT id, title, performer FROM songs WHERE LOWER(title) LIKE \'%\' || $1 || \'%\' OR LOWER(performer) LIKE \'%\' || $2 || \'%\' ',
+      values: [title, performer],
+    };
+
+    const result = await this._pool.query(query);
+    console.log('🚀 ~ file: SongsService.js:43 ~ SongsService ~ getSongs ~ result.rows:', result.rows);
     return result.rows.map(mapDBToModel);
   }
 
